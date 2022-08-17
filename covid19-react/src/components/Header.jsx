@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 
 import {format} from "date-fns";
-import {ko} from "date-fns/locale";
 
 import Menu from "../assets/icon/Menu.svg";
 
@@ -45,11 +44,15 @@ const HeaderContainer = styled.div`
   background : #F8F7F9;
   box-shadow: 0 4px 11px -1px rgba(9, 21, 64, 0.25);
   color : #091540;
+  display: flex;
+  justify-content: space-between;
+  align-items : center;
 `;
 
 const MenuIcon = styled.div`
   width : 24px;
   height : 24px;
+  margin-left : 28px;
   & img{
     width : 100%;
     height : 100%;
@@ -57,13 +60,15 @@ const MenuIcon = styled.div`
 `;
 
 const Title = styled.p`
+  font-weight : bold;
   font-size : 24px;
+  margin-left : 28px;
 `;
 
 const DateWarp = styled.div`
-  background: red;
   width : 80px;
   height : 30px;
+  margin-right : 6px;
   font-size : 14px;
   font-weight: 900;
   display: flex;
