@@ -1,5 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
 .App {
   text-align: center;
+}
+
+html,body{
+  font-family: 'Nanum Gothic', sans-serif;
 }
 
 .App-logo {
@@ -36,3 +42,4 @@
     transform: rotate(360deg);
   }
 }
+
