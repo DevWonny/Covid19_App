@@ -10,10 +10,12 @@ import Menu from "../assets/icon/Menu.svg";
 const Header = ()=>{
     // 실시간 날짜 및 시간
     const [todayDate, setTodayDate]= useState('');
+    const [realTime, setRealTime] = useState('');
 
     useEffect(()=>{
+        setTodayDate(format(new Date(), 'yyyy.MM.dd'));
         setInterval(()=>{
-            setTodayDate(format(new Date(), 'yyyy-MM-dd p'));
+            setRealTime(format(new Date(),'p'));
         },1000)
     },[])
 
@@ -23,7 +25,10 @@ const Header = ()=>{
                 <img src={Menu} alt="Menu Icon"/>
             </MenuIcon>
             <Title>Careful Covid</Title>
-            <DateWarp></DateWarp>
+            <DateWarp>
+                <p>{todayDate}</p>
+                <p>{realTime}</p>
+            </DateWarp>
         </HeaderContainer>
 
     )
@@ -56,5 +61,18 @@ const Title = styled.p`
 `;
 
 const DateWarp = styled.div`
-    font-size : 14px;
+  background: red;
+  width : 80px;
+  height : 30px;
+  font-size : 14px;
+  font-weight: 900;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  & p{
+    margin : 0;
+  }
 `;
+
+
