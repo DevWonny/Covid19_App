@@ -1,10 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import NextIcon from "../assets/icon/NextIcon.svg";
 import GenderIcon from "../assets/icon/genderIcon.svg";
 import MapIcon from "../assets/icon/mapIcon.svg";
 
 const MainPage = () => {
+  const navigate = useNavigate();
+
   return (
     <MainContainer>
       <LiveStatus>
@@ -32,7 +35,11 @@ const MainPage = () => {
           </SmallIcon>
           <SmallTitle>성별 / 연령별 현황</SmallTitle>
 
-          <NextIconDiv>
+          <NextIconDiv
+            onClick={() => {
+              navigate("/genderPage");
+            }}
+          >
             <img src={NextIcon} alt="NextIcon" />
           </NextIconDiv>
         </SmallStatus>
@@ -43,7 +50,11 @@ const MainPage = () => {
           </SmallIcon>
           <SmallTitle>지역별 현황</SmallTitle>
 
-          <NextIconDiv>
+          <NextIconDiv
+            onClick={() => {
+              navigate("/mapPage");
+            }}
+          >
             <img src={NextIcon} alt="NextIcon" />
           </NextIconDiv>
         </SmallStatus>

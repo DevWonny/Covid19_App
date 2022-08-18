@@ -85,6 +85,7 @@ const MenuButton = styled.div`
   line-height: 50px;
   display: flex;
   align-items: center;
+  font-size: 0.9rem;
 `;
 
 const MenuButtonIcon = styled.div`
