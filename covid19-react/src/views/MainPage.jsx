@@ -94,11 +94,11 @@ const SectionTitleDiv = styled.div`
 `;
 const SectionTitle = styled.span`
   font-weight: 900;
-  font-size: 18px;
+  font-size: 1.2rem;
   color: #1334ab;
 `;
 const SectionSubTitle = styled.span`
-  font-size: 12px;
+  font-size: 0.5rem;
   color: #1334ab;
   margin-left: 5px;
 `;
@@ -117,11 +117,11 @@ const LiveGraphDiv = styled.div`
 const LiveTextContent = styled.div`
   width: 45%;
   height: 100%;
-  font-size: 13px;
   padding-top: 30px;
 `;
 
 const LiveText = styled.p`
+  font-size: 0.7rem;
   width: 100%;
   height: 20px;
   color: #1334ab;
@@ -150,7 +150,7 @@ const SmallStatus = styled.div`
   justify-content: center;
 `;
 const SmallTitle = styled.p`
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 900;
   color: #1334ab;
 `;
@@ -197,5 +197,5 @@ const DeathText = styled.p`
   margin-top: 10px;
   margin-bottom: 0;
   color: #1334ab;
-  font-size: 13px;
+  font-size: 0.8rem;
 `;
