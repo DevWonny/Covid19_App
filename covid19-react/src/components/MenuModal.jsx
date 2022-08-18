@@ -73,7 +73,7 @@ const MenuContainer = styled.div`
   background: #f8f7f9;
   position: absolute;
   top: 79px;
-  color: #091540;
+  color: #1334ab;
 `;
 
 const MenuButton = styled.div`

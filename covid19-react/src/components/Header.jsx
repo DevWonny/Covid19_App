@@ -56,7 +56,7 @@ const HeaderContainer = styled.div`
   background: #f8f7f9;
   box-shadow: ${(props) =>
     !props.isMenu && "0 4px 11px -1px rgba(9, 21, 64, 0.25)"};
-  color: #091540;
+  color: #1334ab;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -77,7 +77,7 @@ const LineTop = styled.span`
   position: absolute;
   width: 24px;
   height: 4px;
-  background-color: #000;
+  background-color: #1334ab;
   border-radius: 3px;
   transition: transform 0.25s, opacity 0.35s;
   transform: ${(props) =>
@@ -88,7 +88,7 @@ const LineMiddle = styled.span`
   position: absolute;
   width: 24px;
   height: 4px;
-  background-color: #000;
+  background-color: #1334ab;
   border-radius: 3px;
   transition: transform 0.25s, opacity 0.35s;
   transform: ${(props) => props.isMenu && "translateX(16px)"};
@@ -99,7 +99,7 @@ const LineBottom = styled.span`
   position: absolute;
   width: 24px;
   height: 4px;
-  background-color: #000;
+  background-color: #1334ab;
   border-radius: 3px;
   transition: transform 0.25s, opacity 0.35s;
   transform: ${(props) =>
