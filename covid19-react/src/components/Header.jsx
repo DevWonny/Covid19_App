@@ -1,39 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
-import MenuModal from './MenuModal';
+import MenuModal from "./MenuModal";
 
 const Header = () => {
   // 실시간 날짜 및 시간
-  const [todayDate, setTodayDate] = useState('');
-  const [realTime, setRealTime] = useState('');
+  const [todayDate, setTodayDate] = useState("");
+  const [realTime, setRealTime] = useState("");
 
   // menu modal
   const [isMenu, setIsMenu] = useState(false);
 
   useEffect(() => {
-    setTodayDate(format(new Date(), 'yyyy.MM.dd'));
+    setTodayDate(format(new Date(), "yyyy.MM.dd"));
     setInterval(() => {
-      setRealTime(format(new Date(), 'p'));
+      setRealTime(format(new Date(), "p"));
     }, 1000);
   }, []);
 
   return (
     <>
       <HeaderContainer isMenu={isMenu}>
-        <div
-          className="hamburger"
+        <Hamburger
           onClick={() => {
             setIsMenu(!isMenu);
           }}
         >
-          <span className="line line-top" isMenu={isMenu}></span>
-          <span className="line line-middle" isMenu={isMenu}></span>
-          <span className="line line-bottom" isMenu={isMenu}></span>
-        </div>
+          <LineTop isMenu={isMenu}></LineTop>
+          <LineMiddle isMenu={isMenu}></LineMiddle>
+          <LineBottom isMenu={isMenu}></LineBottom>
+        </Hamburger>
 
         <Title>Careful Covid</Title>
         <DateWarp>
@@ -56,45 +55,54 @@ const HeaderContainer = styled.div`
   height: 80px;
   background: #f8f7f9;
   box-shadow: ${(props) =>
-    !props.isMenu && '0 4px 11px -1px rgba(9, 21, 64, 0.25)'};
+    !props.isMenu && "0 4px 11px -1px rgba(9, 21, 64, 0.25)"};
   color: #091540;
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
 
-  .hamburger {
-    width: 24px;
-    height: 24px;
-    margin-left: 28px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+const Hamburger = styled.div`
+  width: 24px;
+  height: 24px;
+  margin-left: 28px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
-  .line {
-    position: absolute;
-    width: 24px;
-    height: 4px;
-    background-color: #000;
-    border-radius: 3px;
-    transition: transform 0.25s, opacity 0.35s;
-  }
+const LineTop = styled.span`
+  position: absolute;
+  width: 24px;
+  height: 4px;
+  background-color: #000;
+  border-radius: 3px;
+  transition: transform 0.25s, opacity 0.35s;
+  transform: ${(props) =>
+    props.isMenu ? "rotate(45deg)" : "translateY(-7px)"};
+`;
 
-  .line-top {
-    transform: translateY(-7px);
-    transform: ${(props) => props.isMenu && 'rotate(45deg)'};
-  }
+const LineMiddle = styled.span`
+  position: absolute;
+  width: 24px;
+  height: 4px;
+  background-color: #000;
+  border-radius: 3px;
+  transition: transform 0.25s, opacity 0.35s;
+  transform: ${(props) => props.isMenu && "translateX(16px)"};
+  opacity: ${(props) => props.isMenu && "0"};
+`;
 
-  .line-middle {
-    transform: ${(props) => props.isMenu && 'translateX(16px)'};
-    opacity: ${(props) => props.isMenu && '0'};
-  }
-
-  .line-bottom {
-    transform: translateY(7px);
-    transform: ${(props) => props.isMenu && 'rotate(-45deg)'};
-  }
+const LineBottom = styled.span`
+  position: absolute;
+  width: 24px;
+  height: 4px;
+  background-color: #000;
+  border-radius: 3px;
+  transition: transform 0.25s, opacity 0.35s;
+  transform: ${(props) =>
+    props.isMenu ? "rotate(-45deg)" : "translateY(7px)"};
 `;
 
 const Title = styled.p`
