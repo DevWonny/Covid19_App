@@ -40,7 +40,7 @@ const Header = () => {
           <p>{realTime}</p>
         </DateWarp>
       </HeaderContainer>
-      {isMenu && <MenuModal />}
+      {isMenu && <MenuModal isMenu={isMenu} setIsMenu={setIsMenu} />}
     </>
   );
 };
@@ -60,6 +60,7 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 9;
 `;
 
 const Hamburger = styled.div`
