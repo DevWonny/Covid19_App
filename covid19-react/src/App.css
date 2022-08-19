@@ -43,3 +43,33 @@ html, body {
     }
 }
 
+.bubble_wrap {
+    position: absolute;
+    width: auto;
+    height: auto;
+    background: #F8F7F9;
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: .8rem;
+    color: #1334AB;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bubble_location {
+    margin-bottom: 3px;
+}
+
+.bubble_today_count {
+    margin-bottom: 3px;
+}
+
+.bubble_compare {
+    text-align: center;
+    background: #FFDDDD;
+    width: 80%;
+    color: #FF8585;
+    border-radius: 20px;
+}
