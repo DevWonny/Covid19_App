@@ -9,7 +9,7 @@ const MainPage = () => {
   const navigate = useNavigate();
 
   return (
-    <MainContainer>
+    <MainContainer className="test">
       <LiveStatus>
         <SectionTitleDiv>
           <SectionTitle>실시간 Covid19 현황</SectionTitle>
@@ -81,8 +81,12 @@ const MainContainer = styled.div`
   top: 80px;
   left: 0;
   width: 100%;
-  overflow: hidden;
+  overflow-y: scroll;
   background: #f8f7f9;
+
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
 `;
 
 const LiveStatus = styled.div`
