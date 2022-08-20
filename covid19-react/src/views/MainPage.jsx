@@ -1,12 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import NextIcon from "../assets/icon/NextIcon.svg";
 import GenderIcon from "../assets/icon/genderIcon.svg";
 import MapIcon from "../assets/icon/mapIcon.svg";
 
+import { Covid } from "../api/Covid";
+
 const MainPage = () => {
   const navigate = useNavigate();
+
+  const server = async () => {
+    const res = await Covid();
+
+    if (res) {
+      console.log(res);
+    }
+  };
+
+  useEffect(() => {
+    server();
+  }, []);
 
   return (
     <MainContainer className="test">
