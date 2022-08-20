@@ -1,20 +1,42 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import styled from "styled-components";
+
 import NextIcon from "../assets/icon/NextIcon.svg";
 import GenderIcon from "../assets/icon/genderIcon.svg";
 import MapIcon from "../assets/icon/mapIcon.svg";
 
 import { Covid } from "../api/Covid";
+import { format } from "date-fns";
 
 const MainPage = () => {
   const navigate = useNavigate();
+
+  // 실시간 covid19 현황 기준 날짜
+  const [covidStandard, setCovidStandard] = useState("");
+  const [covidStandardTime, setCovidStandardTime] = useState("");
+  // 일일 확진자
+  // 일일확진자의 경우 이전 날짜의 전체 확진자 - 오늘 날짜의 전체확진자의 결과값이 됨
+  const [todayConfirmedPerson, setTodayConfirmedPerson] = useState("");
+  // 누적 확진자
+  const [totalConfirmedPerson, setTotalConfirmedPerson] = useState("");
 
   const server = async () => {
     const res = await Covid();
 
     if (res) {
-      console.log(res);
+      const date = format(
+        new Date(
+          `${res.stateDt.toString().substring(0, 4)}-${res.stateDt
+            .toString()
+            .substring(4, 6)}-${res.stateDt.toString().substring(6, 8)}`
+        ),
+        "yyyy.MM.dd."
+      );
+
+      setCovidStandard(date);
+      setCovidStandardTime(res.stateTime);
     }
   };
 
@@ -27,7 +49,11 @@ const MainPage = () => {
       <LiveStatus>
         <SectionTitleDiv>
           <SectionTitle>실시간 Covid19 현황</SectionTitle>
-          <SectionSubTitle>(2022.08.17 19:00 기준)</SectionSubTitle>
+          <SectionSubTitle>
+            {covidStandard &&
+              covidStandardTime &&
+              `(${covidStandard} ${covidStandardTime}기준)`}
+          </SectionSubTitle>
         </SectionTitleDiv>
 
         <LiveContent>
