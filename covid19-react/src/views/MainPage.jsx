@@ -8,7 +8,16 @@ import GenderIcon from "../assets/icon/genderIcon.svg";
 import MapIcon from "../assets/icon/mapIcon.svg";
 
 import { Covid } from "../api/Covid";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
+import {
+  Bar,
+  BarChart,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -17,32 +26,83 @@ const MainPage = () => {
   const [covidStandard, setCovidStandard] = useState("");
   const [covidStandardTime, setCovidStandardTime] = useState("");
   // 일일 확진자
-  // 일일확진자의 경우 이전 날짜의 전체 확진자 - 오늘 날짜의 전체확진자의 결과값이 됨
   const [todayConfirmedPerson, setTodayConfirmedPerson] = useState("");
   // 누적 확진자
   const [totalConfirmedPerson, setTotalConfirmedPerson] = useState("");
+  // 하루 전 누적 확진자
+  const [yesterdayConfirmedPerson, setYesterdayConfirmPerson] = useState("");
 
-  const server = async () => {
-    const res = await Covid();
+  // 그래프 데이터 배열
+  const [graphData, setGraphData] = useState([]);
 
-    if (res) {
+  const confirmCountAPI = async () => {
+    const today = new Date();
+    // 어제 날짜
+    const yesterdayRes = await Covid({
+      date: format(subDays(today, 1), "yyyyMMdd"),
+    });
+    // 오늘 날짜
+    const todayRes = await Covid({ date: format(today, "yyyyMMdd") });
+
+    // 최근 7일 간 확진자 수
+    const weekRes = await Covid({
+      date: format(today, "yyyyMMdd"),
+      weekDate: format(subDays(today, 7), "yyyyMMdd"),
+    });
+
+    if (yesterdayRes) {
+      setYesterdayConfirmPerson(yesterdayRes.decideCnt);
+    }
+
+    if (todayRes) {
       const date = format(
         new Date(
-          `${res.stateDt.toString().substring(0, 4)}-${res.stateDt
+          `${todayRes.stateDt.toString().substring(0, 4)}-${todayRes.stateDt
             .toString()
-            .substring(4, 6)}-${res.stateDt.toString().substring(6, 8)}`
+            .substring(4, 6)}-${todayRes.stateDt.toString().substring(6, 8)}`
         ),
         "yyyy.MM.dd."
       );
 
+      if (weekRes) {
+        for (let i = 0; i < weekRes.length; i++) {
+          if (i + 1 !== 8) {
+            setGraphData((prev) => [
+              ...prev,
+              {
+                name: weekRes[i].stateDt.toString().substring(4),
+                "7일간 확진자 현황":
+                  weekRes[i].decideCnt - weekRes[i + 1].decideCnt,
+              },
+            ]);
+          }
+        }
+      }
+
+      // 기준 날짜
       setCovidStandard(date);
-      setCovidStandardTime(res.stateTime);
+      // 기준 시간
+      setCovidStandardTime(todayRes.stateTime);
+      // 누적 확진자 수
+      setTotalConfirmedPerson(todayRes.decideCnt);
     }
   };
 
   useEffect(() => {
-    server();
+    confirmCountAPI();
   }, []);
+
+  useEffect(() => {
+    console.log("graphData", graphData);
+  }, [graphData]);
+  // 일일 확진자 수
+  useEffect(() => {
+    if (totalConfirmedPerson && yesterdayConfirmedPerson) {
+      setTodayConfirmedPerson(
+        (totalConfirmedPerson - yesterdayConfirmedPerson).toString()
+      );
+    }
+  }, [totalConfirmedPerson, yesterdayConfirmedPerson]);
 
   return (
     <MainContainer className="test">
@@ -57,14 +117,30 @@ const MainPage = () => {
         </SectionTitleDiv>
 
         <LiveContent>
-          <LiveGraphDiv>그래프</LiveGraphDiv>
+          {/* 그래프 */}
+          <LiveGraphDiv>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart width={150} height={40} data={graphData}>
+                <XAxis dataKey="name" style={{ fontSize: "0.7rem" }} />
+                <YAxis style={{ fontSize: "0.7rem" }} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="7일간 확진자 현황" fill="#1334ab" />
+              </BarChart>
+            </ResponsiveContainer>
+          </LiveGraphDiv>
 
-          <LiveTextContent>
-            <LiveText>일일 확진자 : 190,000명</LiveText>
-            <LiveText>누적 확진자 : 45,000,000명</LiveText>
-            <LiveText>사망자 : 30명</LiveText>
-            <LiveText>완치자 : 150명</LiveText>
-          </LiveTextContent>
+          <LiveText>
+            일일 확진자 :{" "}
+            {todayConfirmedPerson.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
+          </LiveText>
+          <LiveText>
+            누적 확진자 :{" "}
+            {totalConfirmedPerson
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            명
+          </LiveText>
         </LiveContent>
       </LiveStatus>
 
@@ -162,23 +238,20 @@ const LiveContent = styled.div`
   height: calc(100% - 40px);
   margin-top: 10px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 `;
 const LiveGraphDiv = styled.div`
-  width: 50%;
-  height: 100%;
-  background: gray;
+  width: calc(100% - 5px);
+  height: 80%;
+  //background: gray;
 `;
-const LiveTextContent = styled.div`
-  width: 45%;
-  height: 100%;
-  padding-top: 30px;
-`;
-
 const LiveText = styled.p`
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   width: 100%;
   height: 20px;
+  margin-top: 10px;
+  margin-bottom: 0;
   color: #1334ab;
 `;
 

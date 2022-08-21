@@ -1,12 +1,17 @@
 import axios from "axios";
 
 // 감염자 수 조회
-export const Covid = async () => {
+export const Covid = async ({ date, weekDate }) => {
   const key = process.env.React_App_Covid_Key;
 
+  if (!date) {
+    return;
+  }
   try {
     const res = await axios.get(
-      `http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${key}`
+      `http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${key}&startCreateDt=${
+        weekDate ? weekDate : date
+      }&endCreateDt=${date}`
     );
 
     if (res) {
