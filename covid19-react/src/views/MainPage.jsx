@@ -6,6 +6,7 @@ import styled from "styled-components";
 import NextIcon from "../assets/icon/NextIcon.svg";
 import GenderIcon from "../assets/icon/genderIcon.svg";
 import MapIcon from "../assets/icon/mapIcon.svg";
+import Loading from "../components/Loading";
 
 import { Covid, CovidDeath } from "../api/Covid";
 import { format, subDays } from "date-fns";
@@ -41,8 +42,11 @@ const MainPage = () => {
   const [graphData, setGraphData] = useState([]);
   // 사망자 그래프 데이터 배열
   const [deathGraphData, setDeathGraphData] = useState([]);
+  // loading
+  const [isLoading, setIsLoading] = useState(true);
 
   const confirmCountAPI = async () => {
+    setIsLoading(true);
     const today = new Date();
     // 어제 날짜
     const yesterdayRes = await Covid({
@@ -95,10 +99,13 @@ const MainPage = () => {
       // 누적 사망자 수
       setTotalDeathCount(todayRes.deathCnt);
     }
+
+    setIsLoading(false);
   };
 
   // 사망자 데이터 API 호출
   const DeathCountDataApi = async () => {
+    setIsLoading(true);
     const res = await CovidDeath();
 
     if (res) {
@@ -137,6 +144,8 @@ const MainPage = () => {
           "일일 사망자 현황": res[0].cnt1,
         },
       ]);
+
+      setIsLoading(false);
     }
   };
 
@@ -159,7 +168,8 @@ const MainPage = () => {
   }, [totalConfirmedPerson, yesterdayConfirmedPerson]);
 
   return (
-    <MainContainer className="test">
+    <MainContainer>
+      {isLoading && <Loading />}
       <LiveStatus>
         <SectionTitleDiv>
           <SectionTitle>실시간 Covid19 현황</SectionTitle>
