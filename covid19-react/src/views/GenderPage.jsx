@@ -1,10 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import MaleIcon from "../assets/icon/maleIcon.svg";
 import FemaleIcon from "../assets/icon/femaleIcon.svg";
 
+import { CovidGender } from "../api/Covid";
+
 const GenderPage = () => {
+  // 남성 확진자 수
+  const [maleConfirmCount, setMaleConfirmCount] = useState("");
+  // 여성 확진자 수
+  const [femaleConfirmCount, setFemaleConfirmCount] = useState("");
+  // 남성 확진률
+  const [maleConfirmPercent, setMaleConfirmPercent] = useState("");
+  // 여성 확진률
+  const [femaleConfirmPercent, setFemaleConfirmPercent] = useState("");
+  // 남성 사망자 수
+  const [maleDeathCount, setMaleDeathCount] = useState("");
+  // 여성 사망자 수
+  const [femaleDeathCount, setFemaleDeathCount] = useState("");
+  // 남성 사망률
+  const [maleDeathPercent, setMaleDeathPercent] = useState("");
+  // 여성 사망률
+  const [femaleDeathPercent, setFemaleDeathPercent] = useState("");
+
+  // api 호출
+  const genderFetchApi = async () => {
+    const res = await CovidGender();
+
+    if (res) {
+      res.map((el) => {
+        if (el.gubun === "여성") {
+          setFemaleConfirmCount(el.confCase);
+          setFemaleConfirmPercent(el.confCaseRate);
+          setFemaleDeathCount(el.death.toString());
+          setFemaleDeathPercent(el.deathRate);
+        }
+
+        if (el.gubun === "남성") {
+          setMaleConfirmCount(el.confCase);
+          setMaleConfirmPercent(el.confCaseRate);
+          setMaleDeathCount(el.death.toString());
+          setMaleDeathPercent(el.deathRate);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    genderFetchApi();
+  }, []);
   return (
     <GenderContainer>
       <GenderStatus>
@@ -22,10 +67,24 @@ const GenderPage = () => {
                 <img src={MaleIcon} alt="MaleIcon" />
               </GenderMaleIcon>
               <GenderTextDiv>
-                <p>확진자 : 20,000명</p>
-                <p>확진률 : 57%</p>
-                <p>사망자 : 200명</p>
-                <p>사망률 : 0.01%</p>
+                <p>
+                  확진자 :{" "}
+                  {maleConfirmCount &&
+                    maleConfirmCount
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  명
+                </p>
+                <p>확진률 : {maleConfirmPercent}%</p>
+                <p>
+                  사망자 :{" "}
+                  {maleDeathCount &&
+                    maleDeathCount
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  명
+                </p>
+                <p>사망률 : {maleDeathPercent}%</p>
               </GenderTextDiv>
             </GenderTextWarp>
 
@@ -34,10 +93,24 @@ const GenderPage = () => {
                 <img src={FemaleIcon} alt="FemaleIcon" />
               </GenderFemaleIcon>
               <GenderTextDiv>
-                <p className="female">확진자 : 20,000명</p>
-                <p className="female">확진률 : 57%</p>
-                <p className="female">사망자 : 200명</p>
-                <p className="female">사망률 : 0.01%</p>
+                <p className="female">
+                  확진자 :{" "}
+                  {femaleConfirmCount &&
+                    femaleConfirmCount
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  명
+                </p>
+                <p className="female">확진률 : {femaleConfirmPercent}%</p>
+                <p className="female">
+                  사망자 :{" "}
+                  {femaleDeathCount &&
+                    femaleDeathCount
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  명
+                </p>
+                <p className="female">사망률 : {femaleDeathPercent}%</p>
               </GenderTextDiv>
             </GenderTextWarp>
           </GenderTextContainer>
