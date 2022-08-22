@@ -34,7 +34,7 @@ export const CovidDeath = async () => {
     );
 
     if (res) {
-      return res;
+      return res.data.response.result;
     } else {
       console.log("Not Response");
     }

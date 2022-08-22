@@ -33,9 +33,14 @@ const MainPage = () => {
   const [yesterdayConfirmedPerson, setYesterdayConfirmPerson] = useState("");
   // 누적 사망자
   const [totalDeathCount, setTotalDeathCount] = useState("");
-
-  // 그래프 데이터 배열
+  // 일일 사망자
+  const [todayDeathPerson, setTodayDeathPerson] = useState("");
+  // 최근 7일간 사망자 평균
+  const [averageWeekDeath, setAverageWeekDeath] = useState("");
+  // 확진자 그래프 데이터 배열
   const [graphData, setGraphData] = useState([]);
+  // 사망자 그래프 데이터 배열
+  const [deathGraphData, setDeathGraphData] = useState([]);
 
   const confirmCountAPI = async () => {
     const today = new Date();
@@ -95,13 +100,54 @@ const MainPage = () => {
   // 사망자 데이터 API 호출
   const DeathCountDataApi = async () => {
     const res = await CovidDeath();
-    console.log(res);
+
+    if (res) {
+      // 일일 사망자
+      setTodayDeathPerson(res[0].cnt7);
+      // 최근 7일간 일평균 사망자
+      setAverageWeekDeath(res[0].cnt8);
+      // 사망자 그래프 데이터
+      setDeathGraphData([
+        {
+          date: res[0].mmdd7,
+          "일일 사망자 현황": res[0].cnt7,
+        },
+        {
+          date: res[0].mmdd6,
+          "일일 사망자 현황": res[0].cnt6,
+        },
+        {
+          date: res[0].mmdd5,
+          "일일 사망자 현황": res[0].cnt5,
+        },
+        {
+          date: res[0].mmdd4,
+          "일일 사망자 현황": res[0].cnt4,
+        },
+        {
+          date: res[0].mmdd3,
+          "일일 사망자 현황": res[0].cnt3,
+        },
+        {
+          date: res[0].mmdd2,
+          "일일 사망자 현황": res[0].cnt2,
+        },
+        {
+          date: res[0].mmdd1,
+          "일일 사망자 현황": res[0].cnt1,
+        },
+      ]);
+    }
   };
 
   useEffect(() => {
     confirmCountAPI();
     DeathCountDataApi();
   }, []);
+
+  useEffect(() => {
+    console.log(deathGraphData);
+  }, [deathGraphData]);
 
   // 일일 확진자 수
   useEffect(() => {
@@ -189,13 +235,31 @@ const MainPage = () => {
           <SectionTitle>사망자 현황</SectionTitle>
           <SectionSubTitle>(2022.08.17 19:00 기준)</SectionSubTitle>
         </SectionTitleDiv>
-        <DeathGraphDiv>그래프</DeathGraphDiv>
-        <DeathText>일일 사망자 : 42명</DeathText>
+
+        <DeathGraphDiv>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart width={150} height={40} data={deathGraphData}>
+              <XAxis dataKey="date" style={{ fontSize: "0.7rem" }} />
+              <YAxis style={{ fontSize: "0.7rem" }} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="일일 사망자 현황" fill="#1334ab" />
+            </BarChart>
+          </ResponsiveContainer>
+        </DeathGraphDiv>
+
+        <DeathText>
+          일일 사망자 :{" "}
+          {todayDeathPerson.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
+        </DeathText>
         <DeathText>
           누적 사망자 :{" "}
           {totalDeathCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
         </DeathText>
-        <DeathText>최근 7일간 일평균 : 52명</DeathText>
+        <DeathText>
+          최근 7일간 일평균 사망자:{" "}
+          {averageWeekDeath.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
+        </DeathText>
       </DeathStatus>
     </MainContainer>
   );
@@ -329,7 +393,7 @@ const DeathStatus = styled.div`
 const DeathGraphDiv = styled.div`
   width: calc(100% - 5px);
   height: 70%;
-  background: gray;
+  //background: gray;
   margin-top: 10px;
 `;
 const DeathText = styled.p`
