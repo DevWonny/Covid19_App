@@ -4,9 +4,28 @@ import styled from "styled-components";
 import MaleIcon from "../assets/icon/maleIcon.svg";
 import FemaleIcon from "../assets/icon/femaleIcon.svg";
 
+import Loading from "../components/Loading";
+
+import { format } from "date-fns";
+
 import { CovidGender } from "../api/Covid";
 
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+
 const GenderPage = () => {
+  // 기준 날짜 및 시간
+  const [standardTime, setStandardTime] = useState("");
   // 남성 확진자 수
   const [maleConfirmCount, setMaleConfirmCount] = useState("");
   // 여성 확진자 수
@@ -23,13 +42,72 @@ const GenderPage = () => {
   const [maleDeathPercent, setMaleDeathPercent] = useState("");
   // 여성 사망률
   const [femaleDeathPercent, setFemaleDeathPercent] = useState("");
+  // 성별 확진자 차트 데이터 배열
+  const [genderData, setGenderData] = useState([]);
+  // 연령별 확진자 차트 데이터 배열
+  const [ageData, setAgeData] = useState([]);
+  // loading
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 차트
+  const COLORS = ["#ff777d", "#1334ab"];
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   // api 호출
   const genderFetchApi = async () => {
+    setIsLoading(true);
     const res = await CovidGender();
 
     if (res) {
+      console.log(res);
+      // 기준 시간
+      setStandardTime(format(new Date(res[0].createDt), "yyyy.MM.dd hh:mm"));
+      // 성별 확진률 데이터
+      setGenderData([
+        {
+          name: "여성 확진률",
+          value: res[9].confCaseRate,
+        },
+        {
+          name: "남성 확진률",
+          value: res[10].confCaseRate,
+        },
+      ]);
+
       res.map((el) => {
+        setAgeData((prev) => [
+          ...prev,
+          {
+            age: el.gubun,
+            "연령별 확진자 수(명)": el.confCase,
+            "연령별 사망자 수(명)": el.death,
+          },
+        ]);
+
         if (el.gubun === "여성") {
           setFemaleConfirmCount(el.confCase);
           setFemaleConfirmPercent(el.confCaseRate);
@@ -45,97 +123,154 @@ const GenderPage = () => {
         }
       });
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     genderFetchApi();
   }, []);
+
   return (
-    <GenderContainer>
-      <GenderStatus>
-        <TitleContainer>
-          <Title>남녀 코로나 확진자 현황</Title>
-          <SubTitle>(2022.08.17 09:00기준)</SubTitle>
-        </TitleContainer>
+    <>
+      <GenderContainer>
+        <GenderStatus>
+          <TitleContainer>
+            <Title>남녀 코로나 확진자 현황</Title>
+            <SubTitle>({standardTime && standardTime}기준)</SubTitle>
+          </TitleContainer>
 
-        <GenderContentsContainer>
-          <GenderCircleGraph>확진자 현황 그래프</GenderCircleGraph>
+          <GenderContentsContainer>
+            <GenderCircleGraph>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={genderData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={renderCustomizedLabel}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {genderData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </GenderCircleGraph>
 
-          <GenderTextContainer>
-            <GenderTextWarp>
-              <GenderMaleIcon>
-                <img src={MaleIcon} alt="MaleIcon" />
-              </GenderMaleIcon>
-              <GenderTextDiv>
-                <p>
-                  확진자 :{" "}
-                  {maleConfirmCount &&
-                    maleConfirmCount
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  명
-                </p>
-                <p>확진률 : {maleConfirmPercent}%</p>
-                <p>
-                  사망자 :{" "}
-                  {maleDeathCount &&
-                    maleDeathCount
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  명
-                </p>
-                <p>사망률 : {maleDeathPercent}%</p>
-              </GenderTextDiv>
-            </GenderTextWarp>
+            <GenderTextContainer>
+              <GenderTextWarp>
+                <GenderMaleIcon>
+                  <img src={MaleIcon} alt="MaleIcon" />
+                </GenderMaleIcon>
+                <GenderTextDiv>
+                  <p>
+                    확진자 :{" "}
+                    {maleConfirmCount &&
+                      maleConfirmCount
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    명
+                  </p>
+                  <p>확진률 : {maleConfirmPercent}%</p>
+                  <p>
+                    사망자 :{" "}
+                    {maleDeathCount &&
+                      maleDeathCount
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    명
+                  </p>
+                  <p>사망률 : {maleDeathPercent}%</p>
+                </GenderTextDiv>
+              </GenderTextWarp>
 
-            <GenderTextWarp>
-              <GenderFemaleIcon>
-                <img src={FemaleIcon} alt="FemaleIcon" />
-              </GenderFemaleIcon>
-              <GenderTextDiv>
-                <p className="female">
-                  확진자 :{" "}
-                  {femaleConfirmCount &&
-                    femaleConfirmCount
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  명
-                </p>
-                <p className="female">확진률 : {femaleConfirmPercent}%</p>
-                <p className="female">
-                  사망자 :{" "}
-                  {femaleDeathCount &&
-                    femaleDeathCount
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  명
-                </p>
-                <p className="female">사망률 : {femaleDeathPercent}%</p>
-              </GenderTextDiv>
-            </GenderTextWarp>
-          </GenderTextContainer>
-        </GenderContentsContainer>
-      </GenderStatus>
+              <GenderTextWarp>
+                <GenderFemaleIcon>
+                  <img src={FemaleIcon} alt="FemaleIcon" />
+                </GenderFemaleIcon>
+                <GenderTextDiv>
+                  <p className="female">
+                    확진자 :{" "}
+                    {femaleConfirmCount &&
+                      femaleConfirmCount
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    명
+                  </p>
+                  <p className="female">확진률 : {femaleConfirmPercent}%</p>
+                  <p className="female">
+                    사망자 :{" "}
+                    {femaleDeathCount &&
+                      femaleDeathCount
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    명
+                  </p>
+                  <p className="female">사망률 : {femaleDeathPercent}%</p>
+                </GenderTextDiv>
+              </GenderTextWarp>
+            </GenderTextContainer>
+          </GenderContentsContainer>
+        </GenderStatus>
 
-      <AgeStatus>
-        <TitleContainer>
-          <Title>연령별 코로나 확진자 현황</Title>
-          <SubTitle>(2022.08.17 09:00기준)</SubTitle>
-        </TitleContainer>
+        <AgeStatus>
+          <TitleContainer>
+            <Title>연령별 코로나 확진자 현황</Title>
+            <SubTitle>({standardTime && standardTime}기준)</SubTitle>
+          </TitleContainer>
 
-        <AgeContainer>
-          <AgeWrap>
-            <AgeChart>확진자</AgeChart>
-            <AgeText>연령별 확진자 수(명)</AgeText>
-          </AgeWrap>
+          <AgeContainer>
+            <AgeWrap>
+              <AgeChart>
+                <ResponsiveContainer width="100%" height="100%" padding="none">
+                  <BarChart
+                    width={150}
+                    height={40}
+                    data={ageData
+                      .filter((el) => el.age !== "여성")
+                      .filter((el) => el.age !== "남성")}
+                  >
+                    <XAxis dataKey="age" style={{ fontSize: "0.7rem" }} />
+                    <YAxis style={{ fontSize: "0.7rem" }} />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="연령별 확진자 수(명)" fill="#1334ab" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </AgeChart>
+            </AgeWrap>
 
-          <AgeWrap>
-            <AgeChart>사망자</AgeChart>
-            <AgeText>연령별 사망자 수(명)</AgeText>
-          </AgeWrap>
-        </AgeContainer>
-      </AgeStatus>
-    </GenderContainer>
+            <AgeWrap>
+              <AgeChart>
+                <ResponsiveContainer width="100%" height="100%" padding="none">
+                  <BarChart
+                    width={150}
+                    height={40}
+                    data={ageData
+                      .filter((el) => el.age !== "여성")
+                      .filter((el) => el.age !== "남성")}
+                  >
+                    <XAxis dataKey="age" style={{ fontSize: "0.7rem" }} />
+                    <YAxis style={{ fontSize: "0.7rem" }} />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="연령별 사망자 수(명)" fill="#1334ab" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </AgeChart>
+            </AgeWrap>
+          </AgeContainer>
+        </AgeStatus>
+      </GenderContainer>
+      {isLoading && <Loading />}
+    </>
   );
 };
 
@@ -186,8 +321,8 @@ const GenderContentsContainer = styled.div`
   align-items: center;
 `;
 const GenderCircleGraph = styled.div`
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   background: gray;
   text-align: center;
@@ -245,40 +380,31 @@ const GenderTextDiv = styled.div`
 
 const AgeStatus = styled.div`
   width: 95%;
-  height: 250px;
+  height: 500px;
+  overflow: hidden;
   box-shadow: 0 1px 6px 3px rgba(9, 21, 64, 0.25);
   border-radius: 5px;
   background: #f8f7f9;
   margin: 30px auto 0;
   box-sizing: border-box;
-  padding-top: 5px;
-  padding-left: 5px;
-  overflow: hidden;
+  padding: 5px 0 5px 5px;
 `;
 const AgeContainer = styled.div`
   width: 100%;
   height: 80%;
   display: flex;
+  flex-direction: column;
   margin-top: 15px;
 `;
 const AgeWrap = styled.div`
-  width: 50%;
+  width: calc(100% - 5px);
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 10px;
 `;
 const AgeChart = styled.div`
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: lightgray;
-  text-align: center;
-  line-height: 150px;
-  margin-bottom: 15px;
-`;
-const AgeText = styled.span`
-  font-size: 0.9rem;
-  font-weight: 900;
-  color: #1334ab;
+  width: 100%;
+  height: 100%;
 `;
