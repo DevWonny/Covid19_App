@@ -7,7 +7,7 @@ import NextIcon from "../assets/icon/NextIcon.svg";
 import GenderIcon from "../assets/icon/genderIcon.svg";
 import MapIcon from "../assets/icon/mapIcon.svg";
 
-import { Covid } from "../api/Covid";
+import { Covid, CovidDeath } from "../api/Covid";
 import { format, subDays } from "date-fns";
 import {
   Bar,
@@ -31,6 +31,8 @@ const MainPage = () => {
   const [totalConfirmedPerson, setTotalConfirmedPerson] = useState("");
   // 하루 전 누적 확진자
   const [yesterdayConfirmedPerson, setYesterdayConfirmPerson] = useState("");
+  // 누적 사망자
+  const [totalDeathCount, setTotalDeathCount] = useState("");
 
   // 그래프 데이터 배열
   const [graphData, setGraphData] = useState([]);
@@ -85,16 +87,22 @@ const MainPage = () => {
       setCovidStandardTime(todayRes.stateTime);
       // 누적 확진자 수
       setTotalConfirmedPerson(todayRes.decideCnt);
+      // 누적 사망자 수
+      setTotalDeathCount(todayRes.deathCnt);
     }
+  };
+
+  // 사망자 데이터 API 호출
+  const DeathCountDataApi = async () => {
+    const res = await CovidDeath();
+    console.log(res);
   };
 
   useEffect(() => {
     confirmCountAPI();
+    DeathCountDataApi();
   }, []);
 
-  useEffect(() => {
-    console.log("graphData", graphData);
-  }, [graphData]);
   // 일일 확진자 수
   useEffect(() => {
     if (totalConfirmedPerson && yesterdayConfirmedPerson) {
@@ -183,7 +191,10 @@ const MainPage = () => {
         </SectionTitleDiv>
         <DeathGraphDiv>그래프</DeathGraphDiv>
         <DeathText>일일 사망자 : 42명</DeathText>
-        <DeathText>누적 사망자 : 25,752명</DeathText>
+        <DeathText>
+          누적 사망자 :{" "}
+          {totalDeathCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
+        </DeathText>
         <DeathText>최근 7일간 일평균 : 52명</DeathText>
       </DeathStatus>
     </MainContainer>

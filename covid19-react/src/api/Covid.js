@@ -17,7 +17,7 @@ export const Covid = async ({ date, weekDate }) => {
     if (res) {
       return res.data.response.body.items.item;
     } else {
-      console.log("Not Res");
+      console.log("Not Response");
     }
   } catch (err) {
     console.log(err);
@@ -25,7 +25,23 @@ export const Covid = async ({ date, weekDate }) => {
 };
 
 // 사망자 수 조회
-export const CovidDeath = () => {};
+export const CovidDeath = async () => {
+  const key = process.env.React_App_Covid_Key;
+
+  try {
+    const res = await axios.get(
+      `http://apis.data.go.kr/1790387/covid19CurrentStatusDeaths/covid19CurrentStatusDeathsJson?serviceKey=${key}`
+    );
+
+    if (res) {
+      return res;
+    } else {
+      console.log("Not Response");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // 연령별, 성별 감염 현황 조회
 export const CovidGender = () => {};
