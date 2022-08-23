@@ -168,110 +168,114 @@ const MainPage = () => {
   }, [totalConfirmedPerson, yesterdayConfirmedPerson]);
 
   return (
-    <MainContainer>
-      {isLoading && <Loading />}
-      <LiveStatus>
-        <SectionTitleDiv>
-          <SectionTitle>실시간 Covid19 현황</SectionTitle>
-          <SectionSubTitle>
-            {covidStandard &&
-              covidStandardTime &&
-              `(${covidStandard} ${covidStandardTime}기준)`}
-          </SectionSubTitle>
-        </SectionTitleDiv>
+    <>
+      <MainContainer>
+        <LiveStatus>
+          <SectionTitleDiv>
+            <SectionTitle>실시간 Covid19 현황</SectionTitle>
+            <SectionSubTitle>
+              {covidStandard &&
+                covidStandardTime &&
+                `(${covidStandard} ${covidStandardTime}기준)`}
+            </SectionSubTitle>
+          </SectionTitleDiv>
 
-        <LiveContent>
-          {/* 그래프 */}
-          <LiveGraphDiv>
+          <LiveContent>
+            {/* 그래프 */}
+            <LiveGraphDiv>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart width={150} height={40} data={graphData}>
+                  <XAxis dataKey="name" style={{ fontSize: "0.7rem" }} />
+                  <YAxis style={{ fontSize: "0.7rem" }} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="7일간 확진자 현황" fill="#1334ab" />
+                </BarChart>
+              </ResponsiveContainer>
+            </LiveGraphDiv>
+
+            <LiveText>
+              일일 확진자 :{" "}
+              {todayConfirmedPerson.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
+            </LiveText>
+            <LiveText>
+              누적 확진자 :{" "}
+              {totalConfirmedPerson
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              명
+            </LiveText>
+          </LiveContent>
+        </LiveStatus>
+
+        <SmallStatusContainer>
+          <SmallStatus>
+            <SmallIcon>
+              <img src={GenderIcon} alt="genderIcon" />
+            </SmallIcon>
+            <SmallTitle>성별 / 연령별 현황</SmallTitle>
+
+            <NextIconDiv
+              onClick={() => {
+                navigate("/genderPage");
+              }}
+            >
+              <img src={NextIcon} alt="NextIcon" />
+            </NextIconDiv>
+          </SmallStatus>
+
+          <SmallStatus>
+            <SmallIcon>
+              <img src={MapIcon} alt="mapIcon" />
+            </SmallIcon>
+            <SmallTitle>지역별 현황</SmallTitle>
+
+            <NextIconDiv
+              onClick={() => {
+                navigate("/mapPage");
+              }}
+            >
+              <img src={NextIcon} alt="NextIcon" />
+            </NextIconDiv>
+          </SmallStatus>
+        </SmallStatusContainer>
+
+        <DeathStatus>
+          <SectionTitleDiv>
+            <SectionTitle>사망자 현황</SectionTitle>
+            <SectionSubTitle>(2022.08.17 19:00 기준)</SectionSubTitle>
+          </SectionTitleDiv>
+
+          <DeathGraphDiv>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart width={150} height={40} data={graphData}>
-                <XAxis dataKey="name" style={{ fontSize: "0.7rem" }} />
+              <BarChart width={150} height={40} data={deathGraphData}>
+                <XAxis dataKey="date" style={{ fontSize: "0.7rem" }} />
                 <YAxis style={{ fontSize: "0.7rem" }} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="7일간 확진자 현황" fill="#1334ab" />
+                <Bar dataKey="일일 사망자 현황" fill="#1334ab" />
               </BarChart>
             </ResponsiveContainer>
-          </LiveGraphDiv>
+          </DeathGraphDiv>
 
-          <LiveText>
-            일일 확진자 :{" "}
-            {todayConfirmedPerson.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
-          </LiveText>
-          <LiveText>
-            누적 확진자 :{" "}
-            {totalConfirmedPerson
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          <DeathText>
+            일일 사망자 :{" "}
+            {todayDeathPerson.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             명
-          </LiveText>
-        </LiveContent>
-      </LiveStatus>
-
-      <SmallStatusContainer>
-        <SmallStatus>
-          <SmallIcon>
-            <img src={GenderIcon} alt="genderIcon" />
-          </SmallIcon>
-          <SmallTitle>성별 / 연령별 현황</SmallTitle>
-
-          <NextIconDiv
-            onClick={() => {
-              navigate("/genderPage");
-            }}
-          >
-            <img src={NextIcon} alt="NextIcon" />
-          </NextIconDiv>
-        </SmallStatus>
-
-        <SmallStatus>
-          <SmallIcon>
-            <img src={MapIcon} alt="mapIcon" />
-          </SmallIcon>
-          <SmallTitle>지역별 현황</SmallTitle>
-
-          <NextIconDiv
-            onClick={() => {
-              navigate("/mapPage");
-            }}
-          >
-            <img src={NextIcon} alt="NextIcon" />
-          </NextIconDiv>
-        </SmallStatus>
-      </SmallStatusContainer>
-
-      <DeathStatus>
-        <SectionTitleDiv>
-          <SectionTitle>사망자 현황</SectionTitle>
-          <SectionSubTitle>(2022.08.17 19:00 기준)</SectionSubTitle>
-        </SectionTitleDiv>
-
-        <DeathGraphDiv>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart width={150} height={40} data={deathGraphData}>
-              <XAxis dataKey="date" style={{ fontSize: "0.7rem" }} />
-              <YAxis style={{ fontSize: "0.7rem" }} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="일일 사망자 현황" fill="#1334ab" />
-            </BarChart>
-          </ResponsiveContainer>
-        </DeathGraphDiv>
-
-        <DeathText>
-          일일 사망자 :{" "}
-          {todayDeathPerson.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
-        </DeathText>
-        <DeathText>
-          누적 사망자 :{" "}
-          {totalDeathCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
-        </DeathText>
-        <DeathText>
-          최근 7일간 일평균 사망자:{" "}
-          {averageWeekDeath.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
-        </DeathText>
-      </DeathStatus>
-    </MainContainer>
+          </DeathText>
+          <DeathText>
+            누적 사망자 :{" "}
+            {totalDeathCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명
+          </DeathText>
+          <DeathText>
+            최근 7일간 일평균 사망자:{" "}
+            {averageWeekDeath.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            명
+          </DeathText>
+        </DeathStatus>
+      </MainContainer>
+      {isLoading && <Loading />}
+    </>
   );
 };
 

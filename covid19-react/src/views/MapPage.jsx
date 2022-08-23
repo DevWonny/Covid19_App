@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import { CovidLocation } from "../api/Covid";
 
+import Loading from "../components/Loading";
+
 const MapPage = () => {
   const mapRef = useRef();
 
@@ -10,6 +12,8 @@ const MapPage = () => {
   const [map, setMap] = useState(null);
   // 각 시/도 데이터
   const [locationData, setLocationData] = useState([]);
+  // loading
+  const [isLoading, setIsLoading] = useState(false);
 
   // 각 지역 위경도 데이터
   const logLatData = [
@@ -102,6 +106,7 @@ const MapPage = () => {
 
   // api 호출
   const locationCountApi = async () => {
+    setIsLoading(true);
     const res = await CovidLocation();
 
     if (res) {
@@ -124,6 +129,7 @@ const MapPage = () => {
           ]);
         });
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -174,6 +180,7 @@ const MapPage = () => {
   return (
     <>
       <Div ref={mapRef}></Div>
+      {isLoading && <Loading />}
     </>
   );
 };
