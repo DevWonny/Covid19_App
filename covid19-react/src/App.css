@@ -66,10 +66,18 @@ html, body {
     margin-bottom: 3px;
 }
 
-.bubble_compare {
+.bubble_compare_plus {
     text-align: center;
     background: #FFDDDD;
     width: 80%;
     color: #FF8585;
+    border-radius: 20px;
+}
+
+.bubble_compare_minus {
+    text-align: center;
+    background: #1334AB;
+    width: 80%;
+    color: #F8F7F9;
     border-radius: 20px;
 }

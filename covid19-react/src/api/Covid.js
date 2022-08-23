@@ -1,9 +1,9 @@
 import axios from "axios";
 
+const key = process.env.React_App_Covid_Key;
+
 // 감염자 수 조회
 export const Covid = async ({ date, weekDate }) => {
-  const key = process.env.React_App_Covid_Key;
-
   if (!date) {
     return;
   }
@@ -26,8 +26,6 @@ export const Covid = async ({ date, weekDate }) => {
 
 // 사망자 수 조회
 export const CovidDeath = async () => {
-  const key = process.env.React_App_Covid_Key;
-
   try {
     const res = await axios.get(
       `http://apis.data.go.kr/1790387/covid19CurrentStatusDeaths/covid19CurrentStatusDeathsJson?serviceKey=${key}`
@@ -45,8 +43,6 @@ export const CovidDeath = async () => {
 
 // 연령별, 성별 감염 현황 조회
 export const CovidGender = async () => {
-  const key = process.env.React_App_Covid_Key;
-
   try {
     const res = await axios.get(
       `http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19GenAgeCaseInfJson?serviceKey=${key}`
@@ -63,4 +59,18 @@ export const CovidGender = async () => {
 };
 
 // 시/도 현황 조회
-export const CovidLocation = () => {};
+export const CovidLocation = async () => {
+  try {
+    const res = await axios.get(
+      `http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19SidoInfStateJson?serviceKey=${key}`
+    );
+
+    if (res) {
+      return res.data.response.body.items.item;
+    } else {
+      console.log("Not Response");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
