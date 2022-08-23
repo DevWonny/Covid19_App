@@ -370,10 +370,6 @@ const GenderTextDiv = styled.div`
     margin: 0 0 5px 0;
     font-size: 0.7rem;
     color: #1334ab;
-
-    @media screen and (min-width: 375px) {
-      font-size: calc(0.7rem / 375);
-    }
   }
 
   & .female {
@@ -383,12 +379,12 @@ const GenderTextDiv = styled.div`
 
 const AgeStatus = styled.div`
   width: 95%;
-  height: 450px;
+  height: 400px;
   overflow: hidden;
   box-shadow: 0 1px 6px 3px rgba(9, 21, 64, 0.25);
   border-radius: 5px;
   background: #f8f7f9;
-  margin: 30px auto 30px;
+  margin: 30px auto;
   box-sizing: border-box;
   padding: 5px 0 5px 5px;
 `;
