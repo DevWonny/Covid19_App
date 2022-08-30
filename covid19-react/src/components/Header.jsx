@@ -21,6 +21,22 @@ const Header = () => {
     }, 1000);
   }, []);
 
+  // menu 출력 시 뒤 배경 스크롤 막기
+  useEffect(() => {
+    if (isMenu) {
+      document.body.style.cssText = `
+      position: fixed; 
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+      return () => {
+        const scrollY = document.body.style.top;
+        document.body.style.cssText = "";
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      };
+    }
+  }, [isMenu]);
+
   return (
     <>
       <HeaderContainer isMenu={isMenu}>
