@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import MaleIcon from "../assets/icon/maleIcon.svg";
@@ -24,6 +25,9 @@ import {
 } from "recharts";
 
 const GenderPage = () => {
+  // dark mode
+  const isDark = useSelector((state) => state.theme.mode);
+
   // 기준 날짜 및 시간
   const [standardTime, setStandardTime] = useState("");
   // 남성 확진자 수
@@ -132,11 +136,13 @@ const GenderPage = () => {
 
   return (
     <>
-      <GenderContainer>
-        <GenderStatus>
+      <GenderContainer isDark={isDark}>
+        <GenderStatus isDark={isDark}>
           <TitleContainer>
-            <Title>남녀 코로나 확진자 현황</Title>
-            <SubTitle>({standardTime && standardTime}기준)</SubTitle>
+            <Title isDark={isDark}>남녀 코로나 확진자 현황</Title>
+            <SubTitle isDark={isDark}>
+              ({standardTime && standardTime}기준)
+            </SubTitle>
           </TitleContainer>
 
           <GenderContentsContainer>
@@ -220,10 +226,12 @@ const GenderPage = () => {
           </GenderContentsContainer>
         </GenderStatus>
 
-        <AgeStatus>
+        <AgeStatus isDark={isDark}>
           <TitleContainer>
-            <Title>연령별 코로나 확진자 현황</Title>
-            <SubTitle>({standardTime && standardTime}기준)</SubTitle>
+            <Title isDark={isDark}>연령별 코로나 확진자 현황</Title>
+            <SubTitle isDark={isDark}>
+              ({standardTime && standardTime}기준)
+            </SubTitle>
           </TitleContainer>
 
           <AgeContainer>
@@ -241,7 +249,10 @@ const GenderPage = () => {
                     <YAxis style={{ fontSize: "0.7rem" }} />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="연령별 확진자 수(명)" fill="#1334ab" />
+                    <Bar
+                      dataKey="연령별 확진자 수(명)"
+                      fill={isDark ? "#1334AB" : "#f8f7f9"}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </AgeChart>
@@ -261,7 +272,10 @@ const GenderPage = () => {
                     <YAxis style={{ fontSize: "0.7rem" }} />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="연령별 사망자 수(명)" fill="#1334ab" />
+                    <Bar
+                      dataKey="연령별 사망자 수(명)"
+                      fill={isDark ? "#1334AB" : "#f8f7f9"}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </AgeChart>
@@ -282,7 +296,7 @@ const GenderContainer = styled.div`
   left: 0;
   width: 100%;
   overflow: hidden;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
 `;
 const TitleContainer = styled.div`
   width: 100%;
@@ -292,20 +306,23 @@ const TitleContainer = styled.div`
 const Title = styled.span`
   font-size: 1.1rem;
   font-weight: 900;
-  color: #1334ab;
+  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
 `;
 const SubTitle = styled.span`
   font-size: 0.5rem;
-  color: #1334ab;
   margin-left: 5px;
+  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
 `;
 
 const GenderStatus = styled.div`
   width: 95%;
   height: 250px;
-  box-shadow: 0 1px 6px 3px rgba(9, 21, 64, 0.25);
+  box-shadow: ${(props) =>
+    props.isDark
+      ? "0 1px 6px 3px rgba(9, 21, 64, 0.25)"
+      : "0 1px 6px 3px rgba(248, 247, 249, 0.25)"};
   border-radius: 5px;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
   margin: 30px auto 0;
   box-sizing: border-box;
   padding-top: 5px;
@@ -323,7 +340,6 @@ const GenderCircleGraph = styled.div`
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: gray;
   text-align: center;
   line-height: 150px;
 `;
@@ -381,9 +397,12 @@ const AgeStatus = styled.div`
   width: 95%;
   height: 400px;
   overflow: hidden;
-  box-shadow: 0 1px 6px 3px rgba(9, 21, 64, 0.25);
+  box-shadow: ${(props) =>
+    props.isDark
+      ? "0 1px 6px 3px rgba(9, 21, 64, 0.25)"
+      : "0 1px 6px 3px rgba(248, 247, 249, 0.25)"};
   border-radius: 5px;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
   margin: 30px auto;
   box-sizing: border-box;
   padding: 5px 0 5px 5px;

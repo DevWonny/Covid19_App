@@ -31,8 +31,6 @@ const MenuModal = ({ isMenu, setIsMenu }) => {
     setIsMenu(false);
   };
 
-  console.log(toggleActive);
-
   return (
     <MenuWarp>
       <MenuContainer isMenu={isMenu} toggleActive={toggleActive}>
