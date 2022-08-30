@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import { useSelector, useDispatch } from "react-redux/es/exports";
+
+import { dark, light } from "../modules/theme";
+
 import styled from "styled-components";
 
 import HomeIcon from "../assets/icon/HomeIcon.svg";
@@ -12,13 +16,26 @@ import LigthActivation from "../assets/icon/LightActivation.svg";
 
 const MenuModal = ({ isMenu, setIsMenu }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  // toggle Active
+  const toggleActive = useSelector((state) => state.theme.mode);
 
-  // toggle button
-  const [toggleActive, setToggleActive] = useState(true);
+  // toggle change
+  const onToggle = () => {
+    if (toggleActive) {
+      dispatch(light());
+    } else {
+      dispatch(dark());
+    }
+
+    setIsMenu(false);
+  };
+
+  console.log(toggleActive);
 
   return (
     <MenuWarp>
-      <MenuContainer isMenu={isMenu}>
+      <MenuContainer isMenu={isMenu} toggleActive={toggleActive}>
         <MenuButton
           onClick={() => {
             navigate("/");
@@ -57,14 +74,7 @@ const MenuModal = ({ isMenu, setIsMenu }) => {
 
         {/* Dark mode Toggle button */}
         <ToggleContainer>
-          <input
-            type="checkbox"
-            id="toggle"
-            hidden
-            onClick={() => {
-              setToggleActive(!toggleActive);
-            }}
-          />
+          <input type="checkbox" id="toggle" hidden onClick={onToggle} />
           <ToggleSwitch htmlFor="toggle" toggleActive={toggleActive}>
             <ToggleButton toggleActive={toggleActive}>
               <img
@@ -95,10 +105,10 @@ const MenuWarp = styled.div`
 const MenuContainer = styled.div`
   width: 50%;
   height: 100vh;
-  background: #f8f7f9;
+  background: ${(props) => (props.toggleActive ? "#f8f7f9" : "#222")};
   position: absolute;
   top: 79px;
-  color: #1334ab;
+  color: ${(props) => (props.toggleActive ? "#1334AB" : "#f8f7f9")};
 `;
 
 const MenuButton = styled.div`
@@ -134,6 +144,7 @@ const ToggleContainer = styled.div`
   width: 100%;
   position: absolute;
   bottom: 100px;
+  margin-left: 28px;
 `;
 
 const ToggleSwitch = styled.label`
@@ -144,7 +155,10 @@ const ToggleSwitch = styled.label`
   border-radius: 2rem;
   transition: all 0.2s ease-in;
   background-color: ${(props) => (props.toggleActive ? "#f8f7f9" : "#101010")};
-  box-shadow: 0 0 1rem 3px rgba(0 0 0 /15%);
+  box-shadow: ${(props) =>
+    props.toggleActive
+      ? "0 1px 6px 3px rgba(9, 21, 64, 0.25)"
+      : "0 1px 6px 3px rgba(248, 247, 249, 0.25)"};
   cursor: pointer;
 `;
 

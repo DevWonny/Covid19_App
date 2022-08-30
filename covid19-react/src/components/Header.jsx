@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import styled from "styled-components";
 
@@ -7,6 +8,9 @@ import { format } from "date-fns";
 import MenuModal from "./MenuModal";
 
 const Header = () => {
+  // Dark mode
+  const isDark = useSelector((state) => state.theme.mode);
+
   // 실시간 날짜 및 시간
   const [todayDate, setTodayDate] = useState("");
   const [realTime, setRealTime] = useState("");
@@ -39,15 +43,15 @@ const Header = () => {
 
   return (
     <>
-      <HeaderContainer isMenu={isMenu}>
+      <HeaderContainer isMenu={isMenu} isDark={isDark}>
         <Hamburger
           onClick={() => {
             setIsMenu(!isMenu);
           }}
         >
-          <LineTop isMenu={isMenu}></LineTop>
-          <LineMiddle isMenu={isMenu}></LineMiddle>
-          <LineBottom isMenu={isMenu}></LineBottom>
+          <LineTop isMenu={isMenu} isDark={isDark}></LineTop>
+          <LineMiddle isMenu={isMenu} isDark={isDark}></LineMiddle>
+          <LineBottom isMenu={isMenu} isDark={isDark}></LineBottom>
         </Hamburger>
 
         <Title>Careful Covid</Title>
@@ -69,10 +73,10 @@ const HeaderContainer = styled.div`
   left: 0;
   width: 100%;
   height: 80px;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
   box-shadow: ${(props) =>
     !props.isMenu && "0 4px 11px -1px rgba(9, 21, 64, 0.25)"};
-  color: #1334ab;
+  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -93,7 +97,7 @@ const LineTop = styled.span`
   position: absolute;
   width: 24px;
   height: 4px;
-  background-color: #1334ab;
+  background: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
   border-radius: 3px;
   transition: transform 0.25s, opacity 0.35s;
   transform: ${(props) =>
@@ -104,7 +108,7 @@ const LineMiddle = styled.span`
   position: absolute;
   width: 24px;
   height: 4px;
-  background-color: #1334ab;
+  background: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
   border-radius: 3px;
   transition: transform 0.25s, opacity 0.35s;
   transform: ${(props) => props.isMenu && "translateX(16px)"};
@@ -115,7 +119,7 @@ const LineBottom = styled.span`
   position: absolute;
   width: 24px;
   height: 4px;
-  background-color: #1334ab;
+  background: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
   border-radius: 3px;
   transition: transform 0.25s, opacity 0.35s;
   transform: ${(props) =>

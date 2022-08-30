@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import styled from "styled-components";
 
@@ -22,6 +23,7 @@ import {
 
 const MainPage = () => {
   const navigate = useNavigate();
+  const isDark = useSelector((state) => state.theme.mode);
 
   // 실시간 covid19 현황 기준 날짜
   const [covidStandard, setCovidStandard] = useState("");
@@ -169,8 +171,8 @@ const MainPage = () => {
 
   return (
     <>
-      <MainContainer>
-        <LiveStatus>
+      <MainContainer isDark={isDark}>
+        <LiveStatus isDark={isDark}>
           <SectionTitleDiv>
             <SectionTitle>실시간 Covid19 현황</SectionTitle>
             <SectionSubTitle>
@@ -189,7 +191,10 @@ const MainPage = () => {
                   <YAxis style={{ fontSize: "0.7rem" }} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="7일간 확진자 현황" fill="#1334ab" />
+                  <Bar
+                    dataKey="7일간 확진자 현황"
+                    fill={isDark ? "#1334AB" : "#f8f7f9"}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </LiveGraphDiv>
@@ -209,7 +214,7 @@ const MainPage = () => {
         </LiveStatus>
 
         <SmallStatusContainer>
-          <SmallStatus>
+          <SmallStatus isDark={isDark}>
             <SmallIcon>
               <img src={GenderIcon} alt="genderIcon" />
             </SmallIcon>
@@ -224,7 +229,7 @@ const MainPage = () => {
             </NextIconDiv>
           </SmallStatus>
 
-          <SmallStatus>
+          <SmallStatus isDark={isDark}>
             <SmallIcon>
               <img src={MapIcon} alt="mapIcon" />
             </SmallIcon>
@@ -240,7 +245,7 @@ const MainPage = () => {
           </SmallStatus>
         </SmallStatusContainer>
 
-        <DeathStatus>
+        <DeathStatus isDark={isDark}>
           <SectionTitleDiv>
             <SectionTitle>사망자 현황</SectionTitle>
             <SectionSubTitle>(2022.08.17 19:00 기준)</SectionSubTitle>
@@ -253,7 +258,10 @@ const MainPage = () => {
                 <YAxis style={{ fontSize: "0.7rem" }} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="일일 사망자 현황" fill="#1334ab" />
+                <Bar
+                  dataKey="일일 사망자 현황"
+                  fill={isDark ? "#1334AB" : "#f8f7f9"}
+                />
               </BarChart>
             </ResponsiveContainer>
           </DeathGraphDiv>
@@ -287,7 +295,7 @@ const MainContainer = styled.div`
   left: 0;
   width: 100%;
   overflow-y: scroll;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
 
   &::-webkit-scrollbar {
     display: none !important;
@@ -297,14 +305,18 @@ const MainContainer = styled.div`
 const LiveStatus = styled.div`
   width: 95%;
   height: 250px;
-  box-shadow: 0 1px 6px 3px rgba(9, 21, 64, 0.25);
+  box-shadow: ${(props) =>
+    props.isDark
+      ? "0 1px 6px 3px rgba(9, 21, 64, 0.25)"
+      : "0 1px 6px 3px rgba(248, 247, 249, 0.25)"};
   border-radius: 5px;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
   margin: 30px auto 0;
   box-sizing: border-box;
   padding-top: 5px;
   padding-left: 5px;
   overflow: hidden;
+  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
 `;
 
 const SectionTitleDiv = styled.div`
@@ -315,11 +327,9 @@ const SectionTitleDiv = styled.div`
 const SectionTitle = styled.span`
   font-weight: 900;
   font-size: 1.2rem;
-  color: #1334ab;
 `;
 const SectionSubTitle = styled.span`
   font-size: 0.5rem;
-  color: #1334ab;
   margin-left: 5px;
 `;
 const LiveContent = styled.div`
@@ -333,7 +343,6 @@ const LiveContent = styled.div`
 const LiveGraphDiv = styled.div`
   width: calc(100% - 5px);
   height: 80%;
-  //background: gray;
 `;
 const LiveText = styled.p`
   font-size: 0.8rem;
@@ -341,7 +350,6 @@ const LiveText = styled.p`
   height: 20px;
   margin-top: 10px;
   margin-bottom: 0;
-  color: #1334ab;
 `;
 
 const SmallStatusContainer = styled.div`
@@ -357,19 +365,22 @@ const SmallStatus = styled.div`
   width: 45%;
   height: 130px;
   position: relative;
-  box-shadow: 0 1px 6px 3px rgba(9, 21, 64, 0.25);
+  box-shadow: ${(props) =>
+    props.isDark
+      ? "0 1px 6px 3px rgba(9, 21, 64, 0.25)"
+      : "0 1px 6px 3px rgba(248, 247, 249, 0.25)"};
   border-radius: 5px;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
   box-sizing: border-box;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
 `;
 const SmallTitle = styled.p`
   font-size: 1rem;
   font-weight: 900;
-  color: #1334ab;
 `;
 const SmallIcon = styled.div`
   width: 24px;
@@ -397,22 +408,24 @@ const NextIconDiv = styled.div`
 const DeathStatus = styled.div`
   width: 95%;
   height: 400px;
-  box-shadow: 0 1px 6px 3px rgba(9, 21, 64, 0.25);
+  box-shadow: ${(props) =>
+    props.isDark
+      ? "0 1px 6px 3px rgba(9, 21, 64, 0.25)"
+      : "0 1px 6px 3px rgba(248, 247, 249, 0.25)"};
   border-radius: 5px;
-  background: #f8f7f9;
+  background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
   margin: 30px auto 30px;
   box-sizing: border-box;
   padding: 5px 0 0 5px;
+  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
 `;
 const DeathGraphDiv = styled.div`
   width: calc(100% - 5px);
   height: 70%;
-  //background: gray;
   margin-top: 10px;
 `;
 const DeathText = styled.p`
   margin-top: 10px;
   margin-bottom: 0;
-  color: #1334ab;
   font-size: 0.8rem;
 `;
