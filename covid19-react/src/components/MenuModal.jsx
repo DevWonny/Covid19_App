@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -7,9 +7,14 @@ import styled from "styled-components";
 import HomeIcon from "../assets/icon/HomeIcon.svg";
 import MapIcon from "../assets/icon/mapIcon.svg";
 import GenderIcon from "../assets/icon/genderIcon.svg";
+import DarkActivation from "../assets/icon/DarkActivation.svg";
+import LigthActivation from "../assets/icon/LightActivation.svg";
 
 const MenuModal = ({ isMenu, setIsMenu }) => {
   const navigate = useNavigate();
+
+  // toggle button
+  const [toggleActive, setToggleActive] = useState(true);
 
   return (
     <MenuWarp>
@@ -49,6 +54,26 @@ const MenuModal = ({ isMenu, setIsMenu }) => {
           </MenuButtonIcon>
           성별 / 연령별 현황
         </MenuButton>
+
+        {/* Dark mode Toggle button */}
+        <ToggleContainer>
+          <input
+            type="checkbox"
+            id="toggle"
+            hidden
+            onClick={() => {
+              setToggleActive(!toggleActive);
+            }}
+          />
+          <ToggleSwitch htmlFor="toggle" toggleActive={toggleActive}>
+            <ToggleButton toggleActive={toggleActive}>
+              <img
+                src={toggleActive ? LigthActivation : DarkActivation}
+                alt="dark"
+              />
+            </ToggleButton>
+          </ToggleSwitch>
+        </ToggleContainer>
       </MenuContainer>
     </MenuWarp>
   );
@@ -101,5 +126,44 @@ const MenuButtonIcon = styled.div`
     position: absolute;
     top: 0;
     left: 0;
+  }
+`;
+
+// toggle
+const ToggleContainer = styled.div`
+  width: 100%;
+  position: absolute;
+  bottom: 100px;
+`;
+
+const ToggleSwitch = styled.label`
+  width: 6rem;
+  height: 3rem;
+  display: block;
+  position: relative;
+  border-radius: 2rem;
+  transition: all 0.2s ease-in;
+  background-color: ${(props) => (props.toggleActive ? "#f8f7f9" : "#101010")};
+  box-shadow: 0 0 1rem 3px rgba(0 0 0 /15%);
+  cursor: pointer;
+`;
+
+const ToggleButton = styled.span`
+  // button은 toggle보다 작아야함
+  width: 2.6rem;
+  height: 2.6rem;
+  position: absolute;
+  top: 50%;
+  left: ${(props) => (props.toggleActive ? "0.2rem" : "calc(100% - 2.8rem)")};
+  transition: all 0.2s ease-in;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & img {
+    width: 80%;
+    height: 80%;
   }
 `;
