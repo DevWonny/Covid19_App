@@ -70,9 +70,11 @@ export default Header;
 const HeaderContainer = styled.div`
   position: absolute;
   top: 0;
-  left: 0;
+  left: 0%;
   width: 100%;
+  max-width: 450px;
   height: 80px;
+  margin: 0 auto;
   background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
   box-shadow: ${(props) =>
     !props.isMenu && "0 4px 11px -1px rgba(9, 21, 64, 0.25)"};

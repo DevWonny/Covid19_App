@@ -251,7 +251,7 @@ const GenderPage = () => {
                     <Legend />
                     <Bar
                       dataKey="연령별 확진자 수(명)"
-                      fill={isDark ? "#1334AB" : "#f8f7f9"}
+                      fill={isDark ? "#1334AB" : "#9F9F9F"}
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -274,7 +274,7 @@ const GenderPage = () => {
                     <Legend />
                     <Bar
                       dataKey="연령별 사망자 수(명)"
-                      fill={isDark ? "#1334AB" : "#f8f7f9"}
+                      fill={isDark ? "#1334AB" : "#9F9F9F"}
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -306,12 +306,12 @@ const TitleContainer = styled.div`
 const Title = styled.span`
   font-size: 1.1rem;
   font-weight: 900;
-  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
+  color: ${(props) => (props.isDark ? "#1334AB" : "#9F9F9F")};
 `;
 const SubTitle = styled.span`
   font-size: 0.5rem;
   margin-left: 5px;
-  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
+  color: ${(props) => (props.isDark ? "#1334AB" : "#9F9F9F")};
 `;
 
 const GenderStatus = styled.div`

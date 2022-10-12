@@ -156,10 +156,6 @@ const MainPage = () => {
     DeathCountDataApi();
   }, []);
 
-  useEffect(() => {
-    console.log(deathGraphData);
-  }, [deathGraphData]);
-
   // 일일 확진자 수
   useEffect(() => {
     if (totalConfirmedPerson && yesterdayConfirmedPerson) {
@@ -193,7 +189,7 @@ const MainPage = () => {
                   <Legend />
                   <Bar
                     dataKey="7일간 확진자 현황"
-                    fill={isDark ? "#1334AB" : "#f8f7f9"}
+                    fill={isDark ? "#1334AB" : "#9F9F9F"}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -260,7 +256,7 @@ const MainPage = () => {
                 <Legend />
                 <Bar
                   dataKey="일일 사망자 현황"
-                  fill={isDark ? "#1334AB" : "#f8f7f9"}
+                  fill={isDark ? "#1334AB" : "#9F9F9F"}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -294,6 +290,7 @@ const MainContainer = styled.div`
   top: 80px;
   left: 0;
   width: 100%;
+  max-width: 450px;
   overflow-y: scroll;
   background: ${(props) => (props.isDark ? "#f8f7f9" : "#222")};
 
@@ -316,7 +313,7 @@ const LiveStatus = styled.div`
   padding-top: 5px;
   padding-left: 5px;
   overflow: hidden;
-  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
+  color: ${(props) => (props.isDark ? "#1334AB" : "#9F9F9F")};
 `;
 
 const SectionTitleDiv = styled.div`
@@ -376,7 +373,7 @@ const SmallStatus = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
+  color: ${(props) => (props.isDark ? "#1334AB" : "#9F9F9F")};
 `;
 const SmallTitle = styled.p`
   font-size: 1rem;
@@ -417,7 +414,7 @@ const DeathStatus = styled.div`
   margin: 30px auto 30px;
   box-sizing: border-box;
   padding: 5px 0 0 5px;
-  color: ${(props) => (props.isDark ? "#1334AB" : "#f8f7f9")};
+  color: ${(props) => (props.isDark ? "#1334AB" : "#9F9F9F")};
 `;
 const DeathGraphDiv = styled.div`
   width: calc(100% - 5px);
